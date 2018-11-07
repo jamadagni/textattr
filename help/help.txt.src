@@ -1,0 +1,140 @@
+
+$(ta y)~~~~~~~~~~~~~~~~  ~~~~  ~~${F}    $(ta g)text${W}attr${F}  syntax    $(ta y)~~  ~~~~  ~~~~~~~~~~~~~~~~${F}
+
+$(ta g)text${W}attr${F} should be called with a sequence of specs of the following form (as
+arguments if at the command line, as a string if in a program):
+
+        [${W}f${F}|${W}off${F}] [$(ta +c)attr${F}]${W}*${F} [$(ta +g)fg-color${F}] [/$(ta y)bg-color${F}]
+
+The typical usage pattern is shown above. All arguments are optional, and
+may be specified in any order. However, in case of conflicting arguments
+(such as ‘${W}f${F}’ placed after any other), later ones will override earlier ones.
+
+${W}DESCRIPTION OF SPECS${F}:
+
+‘${W}f${F}’ or ‘${W}off${F}’ will turn off all active formatting.
+
+$(ta +c)attr${F} denotes an attribute from the following list:
+
+    $(ta o)o${F} = $(ta o)bold${F}            $(ta e)e${F} = $(ta e)overlined${F}
+    $(ta t)t${F} = $(ta t)faint${F}           $(ta z)z${F} = $(ta z)struckout${F}
+    $(ta i)i${F} = $(ta i)italic${F}          $(ta u)u${F} = $(ta u)underlined${F}
+    $(ta x)x${F} = $(ta x)blinking${F}
+    $(ta v)v${F} = $(ta v)reversed${F}    (i.e. swapping active foreground and background colors)
+    h = hidden      (${W}Test${F}: If you see a gap ${W}-<${F} $(ta /b h)here${F} ${W}>-${F}, select/copy it.)
+
+${W}NOTE${F}: 1. More than one attribute may be used, as noted by the ${W}*${F} above.
+      2. ‘${W}-${F}’ or ‘${W}not-${F}’ may be prefixed to cancel an active attribute as in:
+         $(ta o)bold $(ta -o)not-bold${F}.
+
+$(ta +r)WARNING${F}: Your terminal/emulator may not support some attributes or display
+         them differently than expected. Canceling specific attributes may
+         not be supported. Displaying this help in the target environment is
+         the only way to check. You should still be able to use ‘${W}f${F}’ or ‘${W}off${F}’
+         to cancel all attributes (but this will cancel the colors too).
+
+$(ta +g)fg-color${F} and $(ta y)bg-color${F} – denoting the foreground and background colors – can
+both be specified in any one of the following four ways, with the only
+difference being that $(ta y)bg-color${F} should be prefixed by a ${W}/${F}.
+
+${W}1${F}. $(ta u w)Named colors${F}:
+
+    $(ta _)_${F} = $(ta _)default${F}     ${W}NOTE${F}: This color is as per terminal/emulator setting.
+
+    $(ta k! /w!)k${F} = $(ta k! /w!)black${F}        $(ta d! /w!)d${F} = $(ta d! /w!)dark-gray${F}
+    $(ta l!)l${F} = $(ta l!)light-gray${F}   $(ta w!)w${F} = $(ta w!)white${F}
+    $(ta r!)r${F} = $(ta r!)red${F}         $(ta +r!)+r${F} = $(ta +r!)light-red${F}
+    $(ta g!)g${F} = $(ta g!)green${F}       $(ta +g!)+g${F} = $(ta +g!)light-green${F}
+    $(ta b!)b${F} = $(ta b!)blue${F}        $(ta +b!)+b${F} = $(ta +b!)light-blue${F}
+    $(ta c!)c${F} = $(ta c!)cyan${F}        $(ta +c!)+c${F} = $(ta +c!)light-cyan${F}
+    $(ta m!)m${F} = $(ta m!)magenta${F}     $(ta +m!)+m${F} = $(ta +m!)light-magenta${F}
+    $(ta n!)n${F} = $(ta n!)brown${F}        $(ta y!)y${F} = $(ta y!)yellow${F}
+
+    ${W}NOTE${F}: The 16 named colors above are defined by your terminal/emulator's
+          color scheme. To request a VGA-type color for these names, append
+          ‘${W}!${F}’ as in $(ta m!)magenta!${F} or $(ta k! /+b!)/+b!${F}. This should produce these colors:
+
+            ${W}Foreground${F}: |$(ta k!)OO${F}|$(ta d!)OO${F}|$(ta l!)OO${F}|$(ta w!)OO${F}|$(ta r!)OO${F}|$(ta g!)OO${F}|$(ta b!)OO${F}|$(ta c!)OO${F}|$(ta m!)OO${F}|$(ta +r!)OO${F}|$(ta +g!)OO${F}|$(ta +b!)OO${F}|$(ta +c!)OO${F}|$(ta +m!)OO${F}|$(ta n!)OO${F}|$(ta y!)OO${F}|
+            ${W}Background${F}: |$(ta /k!)  ${F}|$(ta /d!)  ${F}|$(ta /l!)  ${F}|$(ta /w!)  ${F}|$(ta /r!)  ${F}|$(ta /g!)  ${F}|$(ta /b!)  ${F}|$(ta /c!)  ${F}|$(ta /m!)  ${F}|$(ta /+r!)  ${F}|$(ta /+g!)  ${F}|$(ta /+b!)  ${F}|$(ta /+c!)  ${F}|$(ta /+m!)  ${F}|$(ta /n!)  ${F}|$(ta /y!)  ${F}|
+
+          Compare the color scheme's colors (these $(ta i)may${F} be same as above):
+
+            ${W}Foreground${F}: |$(ta k)OO${F}|$(ta d)OO${F}|$(ta l)OO${F}|$(ta w)OO${F}|$(ta r)OO${F}|$(ta g)OO${F}|$(ta b)OO${F}|$(ta c)OO${F}|$(ta m)OO${F}|$(ta +r)OO${F}|$(ta +g)OO${F}|$(ta +b)OO${F}|$(ta +c)OO${F}|$(ta +m)OO${F}|$(ta n)OO${F}|$(ta y)OO${F}|
+            ${W}Background${F}: |$(ta /k)  ${F}|$(ta /d)  ${F}|$(ta /l)  ${F}|$(ta /w)  ${F}|$(ta /r)  ${F}|$(ta /g)  ${F}|$(ta /b)  ${F}|$(ta /c)  ${F}|$(ta /m)  ${F}|$(ta /+r)  ${F}|$(ta /+g)  ${F}|$(ta /+b)  ${F}|$(ta /+c)  ${F}|$(ta /+m)  ${F}|$(ta /n)  ${F}|$(ta /y)  ${F}|
+
+$(ta +r)WARNING${F}: Your terminal/emulator (especially if in a non-graphical or system
+         recovery mode) may not support colors beyond the basic 16 (or very
+         rarely just 8). It may also have variable support for background vs
+         foreground colors. Unsupported colors may be mapped to the closest
+         supported colors (which may be acceptable) or they may be replaced
+         by black (which is probably not acceptable in foreground on a black
+         background). Again, displaying this help in the target environment
+         is the only way to check what is supported.
+
+${W}2${F}. $(ta u w!)Limited RGB color – RGB values 0 to 5${F}: (giving 6 ^ 3 = 216 colors)
+
+    $(ta ^053)Format${F}: ${W}^$(ta ^453)rgb${F}
+
+        ${W}Foreground${F}:
+
+          ${W}G 0      1      2      3      4      5
+        R B 012345 012345 012345 012345 012345 012345${F}
+        ${W}0${F}   $(ta ^000)O$(ta ^001)O$(ta ^002)O$(ta ^003)O$(ta ^004)O$(ta ^005)O${F} $(ta ^010)O$(ta ^011)O$(ta ^012)O$(ta ^013)O$(ta ^014)O$(ta ^015)O${F} $(ta ^020)O$(ta ^021)O$(ta ^022)O$(ta ^023)O$(ta ^024)O$(ta ^025)O${F} $(ta ^030)O$(ta ^031)O$(ta ^032)O$(ta ^033)O$(ta ^034)O$(ta ^035)O${F} $(ta ^040)O$(ta ^041)O$(ta ^042)O$(ta ^043)O$(ta ^044)O$(ta ^045)O${F} $(ta ^050)O$(ta ^051)O$(ta ^052)O$(ta ^053)O$(ta ^054)O$(ta ^055)O${F}
+        ${W}1${F}   $(ta ^100)O$(ta ^101)O$(ta ^102)O$(ta ^103)O$(ta ^104)O$(ta ^105)O${F} $(ta ^110)O$(ta ^111)O$(ta ^112)O$(ta ^113)O$(ta ^114)O$(ta ^115)O${F} $(ta ^120)O$(ta ^121)O$(ta ^122)O$(ta ^123)O$(ta ^124)O$(ta ^125)O${F} $(ta ^130)O$(ta ^131)O$(ta ^132)O$(ta ^133)O$(ta ^134)O$(ta ^135)O${F} $(ta ^140)O$(ta ^141)O$(ta ^142)O$(ta ^143)O$(ta ^144)O$(ta ^145)O${F} $(ta ^150)O$(ta ^151)O$(ta ^152)O$(ta ^153)O$(ta ^154)O$(ta ^155)O${F}
+        ${W}2${F}   $(ta ^200)O$(ta ^201)O$(ta ^202)O$(ta ^203)O$(ta ^204)O$(ta ^205)O${F} $(ta ^210)O$(ta ^211)O$(ta ^212)O$(ta ^213)O$(ta ^214)O$(ta ^215)O${F} $(ta ^220)O$(ta ^221)O$(ta ^222)O$(ta ^223)O$(ta ^224)O$(ta ^225)O${F} $(ta ^230)O$(ta ^231)O$(ta ^232)O$(ta ^233)O$(ta ^234)O$(ta ^235)O${F} $(ta ^240)O$(ta ^241)O$(ta ^242)O$(ta ^243)O$(ta ^244)O$(ta ^245)O${F} $(ta ^250)O$(ta ^251)O$(ta ^252)O$(ta ^253)O$(ta ^254)O$(ta ^255)O${F}
+        ${W}3${F}   $(ta ^300)O$(ta ^301)O$(ta ^302)O$(ta ^303)O$(ta ^304)O$(ta ^305)O${F} $(ta ^310)O$(ta ^311)O$(ta ^312)O$(ta ^313)O$(ta ^314)O$(ta ^315)O${F} $(ta ^320)O$(ta ^321)O$(ta ^322)O$(ta ^323)O$(ta ^324)O$(ta ^325)O${F} $(ta ^330)O$(ta ^331)O$(ta ^332)O$(ta ^333)O$(ta ^334)O$(ta ^335)O${F} $(ta ^340)O$(ta ^341)O$(ta ^342)O$(ta ^343)O$(ta ^344)O$(ta ^345)O${F} $(ta ^350)O$(ta ^351)O$(ta ^352)O$(ta ^353)O$(ta ^354)O$(ta ^355)O${F}
+        ${W}4${F}   $(ta ^400)O$(ta ^401)O$(ta ^402)O$(ta ^403)O$(ta ^404)O$(ta ^405)O${F} $(ta ^410)O$(ta ^411)O$(ta ^412)O$(ta ^413)O$(ta ^414)O$(ta ^415)O${F} $(ta ^420)O$(ta ^421)O$(ta ^422)O$(ta ^423)O$(ta ^424)O$(ta ^425)O${F} $(ta ^430)O$(ta ^431)O$(ta ^432)O$(ta ^433)O$(ta ^434)O$(ta ^435)O${F} $(ta ^440)O$(ta ^441)O$(ta ^442)O$(ta ^443)O$(ta ^444)O$(ta ^445)O${F} $(ta ^450)O$(ta ^451)O$(ta ^452)O$(ta ^453)O$(ta ^454)O$(ta ^455)O${F}
+        ${W}5${F}   $(ta ^500)O$(ta ^501)O$(ta ^502)O$(ta ^503)O$(ta ^504)O$(ta ^505)O${F} $(ta ^510)O$(ta ^511)O$(ta ^512)O$(ta ^513)O$(ta ^514)O$(ta ^515)O${F} $(ta ^520)O$(ta ^521)O$(ta ^522)O$(ta ^523)O$(ta ^524)O$(ta ^525)O${F} $(ta ^530)O$(ta ^531)O$(ta ^532)O$(ta ^533)O$(ta ^534)O$(ta ^535)O${F} $(ta ^540)O$(ta ^541)O$(ta ^542)O$(ta ^543)O$(ta ^544)O$(ta ^545)O${F} $(ta ^550)O$(ta ^551)O$(ta ^552)O$(ta ^553)O$(ta ^554)O$(ta ^555)O${F}
+
+        ${W}Background${F}:
+
+          ${W}G 0      1      2      3      4      5
+        R B 012345 012345 012345 012345 012345 012345${F}
+        ${W}0${F}   $(ta /^000) $(ta /^001) $(ta /^002) $(ta /^003) $(ta /^004) $(ta /^005) ${F} $(ta /^010) $(ta /^011) $(ta /^012) $(ta /^013) $(ta /^014) $(ta /^015) ${F} $(ta /^020) $(ta /^021) $(ta /^022) $(ta /^023) $(ta /^024) $(ta /^025) ${F} $(ta /^030) $(ta /^031) $(ta /^032) $(ta /^033) $(ta /^034) $(ta /^035) ${F} $(ta /^040) $(ta /^041) $(ta /^042) $(ta /^043) $(ta /^044) $(ta /^045) ${F} $(ta /^050) $(ta /^051) $(ta /^052) $(ta /^053) $(ta /^054) $(ta /^055) ${F}
+        ${W}1${F}   $(ta /^100) $(ta /^101) $(ta /^102) $(ta /^103) $(ta /^104) $(ta /^105) ${F} $(ta /^110) $(ta /^111) $(ta /^112) $(ta /^113) $(ta /^114) $(ta /^115) ${F} $(ta /^120) $(ta /^121) $(ta /^122) $(ta /^123) $(ta /^124) $(ta /^125) ${F} $(ta /^130) $(ta /^131) $(ta /^132) $(ta /^133) $(ta /^134) $(ta /^135) ${F} $(ta /^140) $(ta /^141) $(ta /^142) $(ta /^143) $(ta /^144) $(ta /^145) ${F} $(ta /^150) $(ta /^151) $(ta /^152) $(ta /^153) $(ta /^154) $(ta /^155) ${F}
+        ${W}2${F}   $(ta /^200) $(ta /^201) $(ta /^202) $(ta /^203) $(ta /^204) $(ta /^205) ${F} $(ta /^210) $(ta /^211) $(ta /^212) $(ta /^213) $(ta /^214) $(ta /^215) ${F} $(ta /^220) $(ta /^221) $(ta /^222) $(ta /^223) $(ta /^224) $(ta /^225) ${F} $(ta /^230) $(ta /^231) $(ta /^232) $(ta /^233) $(ta /^234) $(ta /^235) ${F} $(ta /^240) $(ta /^241) $(ta /^242) $(ta /^243) $(ta /^244) $(ta /^245) ${F} $(ta /^250) $(ta /^251) $(ta /^252) $(ta /^253) $(ta /^254) $(ta /^255) ${F}
+        ${W}3${F}   $(ta /^300) $(ta /^301) $(ta /^302) $(ta /^303) $(ta /^304) $(ta /^305) ${F} $(ta /^310) $(ta /^311) $(ta /^312) $(ta /^313) $(ta /^314) $(ta /^315) ${F} $(ta /^320) $(ta /^321) $(ta /^322) $(ta /^323) $(ta /^324) $(ta /^325) ${F} $(ta /^330) $(ta /^331) $(ta /^332) $(ta /^333) $(ta /^334) $(ta /^335) ${F} $(ta /^340) $(ta /^341) $(ta /^342) $(ta /^343) $(ta /^344) $(ta /^345) ${F} $(ta /^350) $(ta /^351) $(ta /^352) $(ta /^353) $(ta /^354) $(ta /^355) ${F}
+        ${W}4${F}   $(ta /^400) $(ta /^401) $(ta /^402) $(ta /^403) $(ta /^404) $(ta /^405) ${F} $(ta /^410) $(ta /^411) $(ta /^412) $(ta /^413) $(ta /^414) $(ta /^415) ${F} $(ta /^420) $(ta /^421) $(ta /^422) $(ta /^423) $(ta /^424) $(ta /^425) ${F} $(ta /^430) $(ta /^431) $(ta /^432) $(ta /^433) $(ta /^434) $(ta /^435) ${F} $(ta /^440) $(ta /^441) $(ta /^442) $(ta /^443) $(ta /^444) $(ta /^445) ${F} $(ta /^450) $(ta /^451) $(ta /^452) $(ta /^453) $(ta /^454) $(ta /^455) ${F}
+        ${W}5${F}   $(ta /^500) $(ta /^501) $(ta /^502) $(ta /^503) $(ta /^504) $(ta /^505) ${F} $(ta /^510) $(ta /^511) $(ta /^512) $(ta /^513) $(ta /^514) $(ta /^515) ${F} $(ta /^520) $(ta /^521) $(ta /^522) $(ta /^523) $(ta /^524) $(ta /^525) ${F} $(ta /^530) $(ta /^531) $(ta /^532) $(ta /^533) $(ta /^534) $(ta /^535) ${F} $(ta /^540) $(ta /^541) $(ta /^542) $(ta /^543) $(ta /^544) $(ta /^545) ${F} $(ta /^550) $(ta /^551) $(ta /^552) $(ta /^553) $(ta /^554) $(ta /^555) ${F}
+
+${W}3${F}. $(ta u w!)True color – RGB values 00 to ff${F}: (giving 256 ^ 3 = 16,777,216 colors)
+
+    $(ta ^053)Format${F}: ${W}%$(ta ^453)rrggbb${F}
+
+    The 138 $(ta i)unique${F} named SVG colors are provided as a sample:
+
+        ${W}Foreground${F}:
+
+        $(ta %000000)OO$(ta %696969)OO$(ta %808080)OO$(ta %a9a9a9)OO$(ta %c0c0c0)OO$(ta %d3d3d3)OO$(ta %dcdcdc)OO$(ta %f5f5f5)OO$(ta %ffffff)OO$(ta %bc8f8f)OO$(ta %cd5c5c)OO$(ta %a52a2a)OO$(ta %b22222)OO$(ta %f08080)OO$(ta %800000)OO$(ta %8b0000)OO$(ta %ff0000)OO$(ta %fffafa)OO$(ta %fa8072)OO$(ta %ffe4e1)OO$(ta %ff6347)OO$(ta %e9967a)OO$(ta %ff4500)OO${F}
+        $(ta %ff7f50)OO$(ta %ffa07a)OO$(ta %a0522d)OO$(ta %d2691e)OO$(ta %8b4513)OO$(ta %fff5ee)OO$(ta %f4a460)OO$(ta %ffdab9)OO$(ta %cd853f)OO$(ta %faf0e6)OO$(ta %ff8c00)OO$(ta %ffe4c4)OO$(ta %d2b48c)OO$(ta %deb887)OO$(ta %faebd7)OO$(ta %ffdead)OO$(ta %ffebcd)OO$(ta %ffefd5)OO$(ta %ffe4b5)OO$(ta %f5deb3)OO$(ta %fdf5e6)OO$(ta %ffa500)OO$(ta %fffaf0)OO${F}
+        $(ta %daa520)OO$(ta %b8860b)OO$(ta %fff8dc)OO$(ta %ffd700)OO$(ta %f0e68c)OO$(ta %fffacd)OO$(ta %eee8aa)OO$(ta %bdb76b)OO$(ta %f5f5dc)OO$(ta %fafad2)OO$(ta %808000)OO$(ta %ffff00)OO$(ta %ffffe0)OO$(ta %fffff0)OO$(ta %6b8e23)OO$(ta %9acd32)OO$(ta %556b2f)OO$(ta %adff2f)OO$(ta %7cfc00)OO$(ta %7fff00)OO$(ta %8fbc8f)OO$(ta %228b22)OO$(ta %32cd32)OO${F}
+        $(ta %90ee90)OO$(ta %98fb98)OO$(ta %006400)OO$(ta %008000)OO$(ta %00ff00)OO$(ta %f0fff0)OO$(ta %2e8b57)OO$(ta %3cb371)OO$(ta %00ff7f)OO$(ta %f5fffa)OO$(ta %00fa9a)OO$(ta %66cdaa)OO$(ta %7fffd4)OO$(ta %40e0d0)OO$(ta %20b2aa)OO$(ta %48d1cc)OO$(ta %2f4f4f)OO$(ta %afeeee)OO$(ta %008080)OO$(ta %008b8b)OO$(ta %00ffff)OO$(ta %e0ffff)OO$(ta %f0ffff)OO${F}
+        $(ta %00ced1)OO$(ta %5f9ea0)OO$(ta %b0e0e6)OO$(ta %add8e6)OO$(ta %00bfff)OO$(ta %87ceeb)OO$(ta %87cefa)OO$(ta %4682b4)OO$(ta %f0f8ff)OO$(ta %708090)OO$(ta %778899)OO$(ta %1e90ff)OO$(ta %b0c4de)OO$(ta %6495ed)OO$(ta %4169e1)OO$(ta %191970)OO$(ta %e6e6fa)OO$(ta %000080)OO$(ta %00008b)OO$(ta %0000cd)OO$(ta %0000ff)OO$(ta %f8f8ff)OO$(ta %483d8b)OO${F}
+        $(ta %6a5acd)OO$(ta %7b68ee)OO$(ta %9370db)OO$(ta %8a2be2)OO$(ta %4b0082)OO$(ta %9932cc)OO$(ta %9400d3)OO$(ta %ba55d3)OO$(ta %d8bfd8)OO$(ta %dda0dd)OO$(ta %ee82ee)OO$(ta %800080)OO$(ta %8b008b)OO$(ta %ff00ff)OO$(ta %da70d6)OO$(ta %c71585)OO$(ta %ff1493)OO$(ta %ff69b4)OO$(ta %db7093)OO$(ta %fff0f5)OO$(ta %dc143c)OO$(ta %ffc0cb)OO$(ta %ffb6c1)OO${F}
+
+        ${W}Background${F}:
+
+        $(ta /%000000)  $(ta /%696969)  $(ta /%808080)  $(ta /%a9a9a9)  $(ta /%c0c0c0)  $(ta /%d3d3d3)  $(ta /%dcdcdc)  $(ta /%f5f5f5)  $(ta /%ffffff)  $(ta /%bc8f8f)  $(ta /%cd5c5c)  $(ta /%a52a2a)  $(ta /%b22222)  $(ta /%f08080)  $(ta /%800000)  $(ta /%8b0000)  $(ta /%ff0000)  $(ta /%fffafa)  $(ta /%fa8072)  $(ta /%ffe4e1)  $(ta /%ff6347)  $(ta /%e9967a)  $(ta /%ff4500)  ${F}
+        $(ta /%ff7f50)  $(ta /%ffa07a)  $(ta /%a0522d)  $(ta /%d2691e)  $(ta /%8b4513)  $(ta /%fff5ee)  $(ta /%f4a460)  $(ta /%ffdab9)  $(ta /%cd853f)  $(ta /%faf0e6)  $(ta /%ff8c00)  $(ta /%ffe4c4)  $(ta /%d2b48c)  $(ta /%deb887)  $(ta /%faebd7)  $(ta /%ffdead)  $(ta /%ffebcd)  $(ta /%ffefd5)  $(ta /%ffe4b5)  $(ta /%f5deb3)  $(ta /%fdf5e6)  $(ta /%ffa500)  $(ta /%fffaf0)  ${F}
+        $(ta /%daa520)  $(ta /%b8860b)  $(ta /%fff8dc)  $(ta /%ffd700)  $(ta /%f0e68c)  $(ta /%fffacd)  $(ta /%eee8aa)  $(ta /%bdb76b)  $(ta /%f5f5dc)  $(ta /%fafad2)  $(ta /%808000)  $(ta /%ffff00)  $(ta /%ffffe0)  $(ta /%fffff0)  $(ta /%6b8e23)  $(ta /%9acd32)  $(ta /%556b2f)  $(ta /%adff2f)  $(ta /%7cfc00)  $(ta /%7fff00)  $(ta /%8fbc8f)  $(ta /%228b22)  $(ta /%32cd32)  ${F}
+        $(ta /%90ee90)  $(ta /%98fb98)  $(ta /%006400)  $(ta /%008000)  $(ta /%00ff00)  $(ta /%f0fff0)  $(ta /%2e8b57)  $(ta /%3cb371)  $(ta /%00ff7f)  $(ta /%f5fffa)  $(ta /%00fa9a)  $(ta /%66cdaa)  $(ta /%7fffd4)  $(ta /%40e0d0)  $(ta /%20b2aa)  $(ta /%48d1cc)  $(ta /%2f4f4f)  $(ta /%afeeee)  $(ta /%008080)  $(ta /%008b8b)  $(ta /%00ffff)  $(ta /%e0ffff)  $(ta /%f0ffff)  ${F}
+        $(ta /%00ced1)  $(ta /%5f9ea0)  $(ta /%b0e0e6)  $(ta /%add8e6)  $(ta /%00bfff)  $(ta /%87ceeb)  $(ta /%87cefa)  $(ta /%4682b4)  $(ta /%f0f8ff)  $(ta /%708090)  $(ta /%778899)  $(ta /%1e90ff)  $(ta /%b0c4de)  $(ta /%6495ed)  $(ta /%4169e1)  $(ta /%191970)  $(ta /%e6e6fa)  $(ta /%000080)  $(ta /%00008b)  $(ta /%0000cd)  $(ta /%0000ff)  $(ta /%f8f8ff)  $(ta /%483d8b)  ${F}
+        $(ta /%6a5acd)  $(ta /%7b68ee)  $(ta /%9370db)  $(ta /%8a2be2)  $(ta /%4b0082)  $(ta /%9932cc)  $(ta /%9400d3)  $(ta /%ba55d3)  $(ta /%d8bfd8)  $(ta /%dda0dd)  $(ta /%ee82ee)  $(ta /%800080)  $(ta /%8b008b)  $(ta /%ff00ff)  $(ta /%da70d6)  $(ta /%c71585)  $(ta /%ff1493)  $(ta /%ff69b4)  $(ta /%db7093)  $(ta /%fff0f5)  $(ta /%dc143c)  $(ta /%ffc0cb)  $(ta /%ffb6c1)  ${F}
+
+    $(ta +r)WARNING${F}: True color is supported in even lesser terminals than limited
+             RGB color above. Thus its usefulness here is lesser.
+
+${W}4${F}. $(ta u w!)Gray values 1 to 24${F}: (doesn't include black and white)
+
+    $(ta ^053)Format${F}: ${W}a$(ta ^453)#${F} or ${W}gray$(ta ^453)#${F}
+
+        $(ta k! /w!)k! $(ta a1) 1 $(ta a2) 2 $(ta a3) 3 $(ta a4) 4 $(ta a5) 5 $(ta a6) 6 $(ta a7) 7 $(ta a8) 8 $(ta a9) 9 $(ta a10)10 $(ta a11)11 $(ta a12)12${F}
+        $(ta a13)13 $(ta a14)14 $(ta a15)15 $(ta a16)16 $(ta a17)17 $(ta a18)18 $(ta a19)19 $(ta a20)20 $(ta a21)21 $(ta a22)22 $(ta a23)23 $(ta a24)24 $(ta w!)w!${F}
+
+${W}OTHER USAGE NOTES${F}:
+
+${W}1${F}. Both short and long forms are permitted for both attributes and colors
+   and may be freely mixed.
+${W}2${F}. There is a cap of 11 arguments for a maximum of nine possible attributes
+   and two (foreground and background) colors.
+

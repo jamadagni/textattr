@@ -1,0 +1,267 @@
+#! /usr/bin/env python3
+
+# ta2html
+# =======
+#
+# Converts text with ANSI color and attribute escape codes to HTML
+#
+# Copyright (C) 2018, Shriramana Sharma, samjnaa-at-gmail-dot-com
+#
+# Use, modification and distribution are permitted subject to the
+# "BSD-2-Clause"-type license stated in the accompanying file LICENSE.txt
+
+from sys import *
+from os import isatty
+
+#
+# init strings for output to stderr
+
+F = "\033[0m"; I = "\033[3m"
+W = "\033[97m"; N = "\033[33m"; G = "\033[92m"; C = "\033[96m"; Y = "\033[93m"
+
+progNameInColor = G + "ta" + W + "2" + C + "html" + F
+
+syntaxMsg = "\n" + progNameInColor + ": Converts text with ANSI color and attribute escape codes to HTML\n\n" + \
+W + "    USAGE" + F + ": " + I + "app-writing-text-to-stdout" + F + " | ta2html > " + I + "output-file.html" + F + "\n\n" + \
+"You may optionally use one or more arguments of the form " + N + "<param>" + W + "=" + N + "<value>" + F + "\n" + \
+"where " + N + "<param>" + F + " may be " + G + "title" + F + " and " + N + "value" + F + " a (quoted) string for the HTML title\n" + \
+"or, to specify the RGB hex values of the default and named terminal colors,\n" + \
+N + "<param>" + F + " should be one of:\n" + Y + \
+"         _ fg-default    /_ bg-default        k black\n" + \
+"         d dark-gray      l light-gray        w white\n" + \
+"         r red            g green             b blue\n" + \
+"        +r light-red     +g light-green      +b light-blue\n" + \
+"         c cyan           m magenta           n brown\n" + \
+"        +c light-cyan    +m light-magenta     y yellow\n" + \
+F + "and " + N + "<value>" + F + " should be a six-digit hexadecimal code from " + G + "000000" + F + " to " + G + "ffffff" + F + ".\n"
+
+if isatty(stdin.fileno()):
+    exit(syntaxMsg)  # input must be piped in
+write = stdout.write
+
+#
+# init color values
+
+colorCodes = [39,           49,             30,       90,          37,           97,         31,       32,       34,       36,       35,          91,          92,            94,           96,           95,                33,       93      ]
+colorAbbrs = ["_",          "/_",           "k",      "d",         "l",          "w",        "r",      "g",      "b",      "c",      "m",         "+r",        "+g",          "+b",         "+c",         "+m",              "n",      "y"     ]
+colorNames = ["fg-default", "bg-default",   "black",  "dark-gray", "light-gray", "white",    "red",    "green",  "blue",   "cyan",   "magenta",   "light-red", "light-green", "light-blue", "light-cyan", "light-magenta",   "brown",  "yellow"]
+colorVals  = ["aaaaaa",     "000000",       "000000", "555555",    "aaaaaa",     "ffffff",   "aa0000", "00aa00", "0000aa", "aa00aa", "aa00aa",    "ff5555",    "55ff55",      "5555ff",     "55ffff",     "ff55ff",          "aa5500", "ffff55"]
+# above color values as per de facto VGA standard (https://en.wikipedia.org/wiki/ANSI_escape_code)
+colorNameFromAbbr = dict(zip(colorAbbrs, colorNames))
+colorScheme = dict(zip(colorNames, colorVals))
+colorNameFromCode = dict(zip(colorCodes, colorNames))
+
+#
+# process command line arguments
+
+def exitOn(text):
+    exit(syntaxMsg + "Found: ‘{}{}{}’".format(W, text, F))
+
+htmlTitle = None
+
+for arg in argv[1:]:
+
+    try:
+        splitAt = arg.index("=")
+    except ValueError:
+        exitOn(arg)
+    name, val = arg[:splitAt], arg[splitAt + 1:]
+
+    if name == "title":
+        htmlTitle = val
+        continue
+
+    try:
+        name = colorNameFromAbbr[name]
+    except KeyError:
+        if name not in colorNames:
+            # neither abbr nor full name
+            exitOn(name)
+
+    if len(val) != 6:
+        exitOn(val)
+    try:
+        int(val, 16)
+    except ValueError:
+        exitOn(val)
+    colorScheme[name] = val
+
+if not htmlTitle:
+    from datetime import datetime
+    htmlTitle = "Text with ANSI color and attribute escape codes converted to HTML at {} UTC".format(datetime.utcnow().strftime("%Y-%b-%d %H:%M:%S"))
+
+#
+# init state and define function to derive HTML attributes from state
+
+attrCodes = [1,      2,       3,        4,            5,          6,           7,          8,        9          ]
+attrNames = ["bold", "faint", "italic", "underlined", "blinking", "overlined", "reversed", "hidden", "struckout"]
+attrNameFromCode = dict(zip(attrCodes, attrNames))
+
+def initState():
+    global state
+    state = {}
+    for attr in attrNames: state[attr] = False
+    state["fgColor"] = "fg-default"
+    state["bgColor"] = "bg-default"
+initState()
+
+# NOTE:
+# Colors when specified are stored as fg/bg and reversed only in display. That
+# is, even if you set reversed first and then set foreground to green, green
+# will be shown as the background color since reversed is still active. So
+# reversed is to be remembered as a state and just swapping fg/bg colors upon
+# encountering the reversed attribute code will not do. But HTML does not have
+# support for reversed so we process the codes as per terminal behaviour but
+# have to write out the final effective HTML color attributes *after* reversing.
+# Also, even in hidden text, bg colors are shown as specified and so it only
+# means fg text is not displayed but is selectable/copyable.
+currHtmlAttr = ""
+def updateCurrHtmlAttr():
+    global currHtmlAttr
+    classes = ["ta_" + attr for attr in attrNames if state[attr] and attr != "reversed"] # doesn't touch fg/bg colors
+    styles = []
+    effectiveFgColor, effectiveBgColor = state["fgColor"], state["bgColor"]
+    if state["reversed"]:
+        effectiveFgColor, effectiveBgColor = effectiveBgColor, effectiveFgColor
+    if effectiveFgColor != "fg-default" and not state["hidden"]:
+        if effectiveFgColor in colorNames:
+            classes.append("ta_" + effectiveFgColor)
+        else:
+            styles.append("color:#" + effectiveFgColor)
+    if effectiveBgColor != "bg-default":
+        if effectiveBgColor in colorNames:
+            classes.append("ta_on_" + effectiveBgColor)
+        else:
+            styles.append("background-color:#" + effectiveBgColor)
+    htmlAttr = []
+    if classes:
+        htmlAttr.append("class=\"{}\"".format(" ".join(classes)))
+    if styles:
+        htmlAttr.append("style=\"{}\"".format(";".join(styles)))
+    currHtmlAttr = " ".join(htmlAttr)
+
+#
+# output HTML prologue
+
+colorCss = ("    .ta_{0:13} {{ color: #{1}; }} .ta_on_{0:13} {{ background-color: #{1}; }}".format(name, colorScheme[name]) for name in colorNames)
+write("""\
+<html>
+<head>
+<meta charset="utf-8">
+<title>{}</title>
+<style>
+    .ta_bold       {{ font-weight: bold; }}
+    .ta_italic     {{ font-style: italic; }}
+    .ta_faint      {{ opacity: 0.5; }} /* may not be the original terminal intent but HTML has no other "faint"ness */
+    .ta_underlined {{ text-decoration: underline;    }}
+    .ta_overlined  {{ text-decoration: overline;     }}
+    .ta_struckout  {{ text-decoration: line-through; }}
+    .ta_hidden     {{ color: transparent; }}
+    .ta_blinking   {{ animation: blink 1s step-start infinite; }} @keyframes blink {{ 50% {{ color: transparent; }} }}
+{}
+</style>
+</head>
+<body>
+<table align="center"><tr><td>
+<pre class="ta_fg-default ta_on_bg-default" style="padding:15px">
+""".format(htmlTitle, "\n".join(colorCss)))
+
+#
+# process stdin line by line
+
+import re
+taRE = re.compile("([^\033]*)(\033\[[\d;]+m|\033)?")
+    # group 1: all non-esc chars starting from cur pos
+    # group 2: escape sequence if valid else esc char alone else nothing
+codeRE = re.compile("\d+")
+
+class Ta2HtmlError(ValueError):
+    pass
+
+def hexColor(r, g, b):
+    return "{:02x}{:02x}{:02x}".format(r, g, b)
+
+for line in stdin:
+    for match in taRE.finditer(line):
+
+        text, escSeq = match.groups()
+        write(text)
+        if escSeq is None:
+            continue
+        elif escSeq == "\033":
+            write(escSeq) # can't process this
+            continue
+
+        codes = [int(c) for c in codeRE.findall(escSeq)]
+        if codes == []:
+            codes = [0]
+        try:
+            i = 0
+            while i < len(codes):
+                code = codes[i]
+                if code == 0:
+                    initState()
+                elif code in attrCodes:
+                    state[attrNameFromCode[code]] = True
+                elif code - 20 in attrCodes:
+                    state[attrNameFromCode[code - 20]] = False
+                elif code == 49: # this one should come before next
+                    state["bgColor"] = "bg-default"
+                elif code in colorCodes:
+                    state["fgColor"] = colorNameFromCode[code]
+                elif code - 10 in colorCodes:
+                    state["bgColor"] = colorNameFromCode[code - 10]
+                elif code in (38, 48):
+                    key = "fgColor" if code == 38 else "bgColor"
+                    try:
+                        nextCode = codes[i + 1]
+                        if nextCode == 2:
+                            r, g, b = codes[i + 2 : i + 5]
+                            for v in (r, g, b):
+                                assert 0 <= v <= 255
+                            state[key] = hexColor(r, g, b)
+                            i += 4 # extra codes consumed
+                        elif nextCode == 5:
+                            idx = codes[i + 2]
+                            assert 0 <= idx <= 255
+                            if idx < 8:
+                                state[key] = colorNameFromCode[30 + idx]
+                            elif idx < 16:
+                                state[key] = colorNameFromCode[90 + idx - 8]
+                            elif idx < 232:
+                                idx -= 16
+                                idx, b = divmod(idx, 6)
+                                idx, g = divmod(idx, 6)
+                                idx, r = divmod(idx, 6)
+                                assert idx == 0
+                                state[key] = hexColor(*(0 if v == 0 else 95 + 40 * (v - 1) for v in (r, g, b)))
+                            else:
+                                val = 8 + (idx - 232) * 10
+                                state[key] = hexColor(val, val, val)
+                            i += 2 # extra codes consumed
+                        else: # nextCode is neither 2 nor 5
+                            raise
+                    except:
+                        raise Ta2HtmlError("Value 38 or 48 should be followed by ;2;R;G;B or ;5;I where R,G,B or I are in [0, 255]")
+                else:
+                    raise Ta2HtmlError("Unknown value ‘{}’ found in escape code".format(code))
+                i += 1
+            if currHtmlAttr != "":
+                write("</span>")
+            updateCurrHtmlAttr()
+            if currHtmlAttr != "":
+                write("<span {}>".format(currHtmlAttr))
+        except Ta2HtmlError as e:
+            stderr.write("{}: {}. This escape code will be ignored!\n".format(progNameInColor, e))
+
+#
+# output HTML epilogue
+
+if currHtmlAttr != "":
+    write("</span>")
+write("""\
+</pre>
+</tr></td></table>
+</body>
+</html>
+""")
